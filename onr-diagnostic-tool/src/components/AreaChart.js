@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import "./AreaChart.css";
 
 class AreaChart extends Component {
-    //Initialize state. In this case date is initialized with Apr because is the first month
+  //Initialize state. In this case date is initialized with Apr because is the first month
   state = {
     data: [
       {
@@ -15,25 +15,26 @@ class AreaChart extends Component {
     ],
   };
 
-  
-  drawAreaChart() {    
-    const Months={
-        Apr:0,
-        May:1,
-        Jun:2,
-        Jul:3
-    }
+  drawAreaChart() {
+    //Enum for Months
+    const Months = {
+      Apr: 0,
+      May: 1,
+      Jun: 2,
+      Jul: 3,
+    };
 
     const margin = { top: 30, right: 20, bottom: 40, left: 50 },
       width = 575 - margin.left - margin.right,
       height = 350 - margin.top - margin.bottom;
 
+    //Scalar Linear axis for the Chart
     const x = d3
       .scaleLinear()
       .domain([
         0,
         d3.max(this.state.data, function (d) {
-          const month=d.date;          
+          const month = d.date;
           return Months[month];
         }),
       ])
@@ -47,19 +48,19 @@ class AreaChart extends Component {
         }),
       ])
       .range([height, 0]);
-    
-    
-    var xAxis = d3
-                .axisBottom(x)
-                .tickFormat(function (d) {
-                    return d.date;
-                })
-                .ticks(0);
 
+    var xAxis = d3
+      .axisBottom(x)
+      .tickFormat(function (d) {
+        return d.date;
+      })
+      .ticks(0);
+
+    //Setting parameters for drawing the chart area
     const area = d3
-      .area()      
+      .area()
       .x(function (d) {
-          const month=d.date;
+        const month = d.date;
         return x(Months[month]);
       })
       .y0(height)
@@ -68,124 +69,124 @@ class AreaChart extends Component {
       })
       .curve(d3.curveMonotoneX);
 
-    //Remove any chart that had before
+    //Remove any chart that was appended before
     d3.selectAll("#svgArea").remove();
 
-    //Create a new area to make the area chart
+    //Create a new area space to make the area chart
     const svg = d3
       .select("#areaChart")
       .append("svg")
       .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)            
-      .attr("id","svgArea")
+      .attr("height", height + margin.top + margin.bottom)
+      .attr("id", "svgArea")
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-//Color
-var gradient = svg.append("defs")
-.append("linearGradient")
-  .attr("id", "gradient")
-  .attr("x1", "100%")
-  .attr("y1", "0%")
-  .attr("x2", "100%")
-  .attr("y2", "100%")
-  .attr("spreadMethod", "pad");
-  gradient.append("stop")
-  .attr("offset", "0%")
-  .attr("stop-color", "#0039e6")
-  .attr("stop-opacity", 1);
+    //Color
+    var gradient = svg
+      .append("defs")
+      .append("linearGradient")
+      .attr("id", "gradient")
+      .attr("x1", "100%")
+      .attr("y1", "0%")
+      .attr("x2", "100%")
+      .attr("y2", "100%")
+      .attr("spreadMethod", "pad");
+    gradient
+      .append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", "#0039e6")
+      .attr("stop-opacity", 1);
 
-gradient.append("stop")
-  .attr("offset", "100%")
-  .attr("stop-color", "#adc2eb")
-  .attr("stop-opacity", 1);
+    gradient
+      .append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", "#adc2eb")
+      .attr("stop-opacity", 1);
 
-// Create Area Chart
+    // Create Area Chart
 
     svg
       .append("path")
       .datum(this.state.data)
       .attr("class", "area")
       .attr("d", area)
-      .style("fill","url(#gradient)");
+      .style("fill", "url(#gradient)");
 
-//Labels
+    //Labels
     svg
       .append("g")
       .attr("class", "xaxis")
-      .attr("transform", "translate(0," + 295 + ")")      
-      .call(xAxis)      
-      .style("stroke","red");      
+      .attr("transform", "translate(0," + 295 + ")")
+      .call(xAxis)
+      .style("stroke", "red");
 
     svg
-    .selectAll(".areaText")
-    .data(this.state.data)
-    .enter()
-    .append("text")
-    .attr("class", "areatext")
-    .attr("text-anchor", "middle")
-    .attr("fill", "black")    
-    .attr("x", function(d,i) {
-        const month=d.date;
+      .selectAll(".areaText")
+      .data(this.state.data)
+      .enter()
+      .append("text")
+      .attr("class", "areatext")
+      .attr("text-anchor", "middle")
+      .attr("fill", "black")
+      .attr("x", function (d, i) {
+        const month = d.date;
         return x(Months[month]);
-    })
-    .attr("y", function(d,i) {
-        return y(d.score) -15;
-    })
-    .text(function(d){
-	    return d.score + " %"
-    });
+      })
+      .attr("y", function (d, i) {
+        return y(d.score) - 15;
+      })
+      .text(function (d) {
+        return d.score + " %";
+      });
     svg
-    .selectAll(".areaText2")
-    .data(this.state.data)
-    .enter()
-    .append("text")
-    .attr("class", "areatext")
-    .attr("text-anchor", "middle")
-    .attr("fill", "black")    
-    .attr("x", function(d) {
-        const month=d.date;
+      .selectAll(".areaText2")
+      .data(this.state.data)
+      .enter()
+      .append("text")
+      .attr("class", "areatext")
+      .attr("text-anchor", "middle")
+      .attr("fill", "black")
+      .attr("x", function (d) {
+        const month = d.date;
         return x(Months[month]);
-    })
-    .attr("y", function(d,i) {
-        return height+30;
-    })
-    .text(function(d){
-	    return d.date      
-    });
-    
+      })
+      .attr("y", function (d, i) {
+        return height + 30;
+      })
+      .text(function (d) {
+        return d.date;
+      });
+
     svg
-    .selectAll(".areaPoints")
-    .data(this.state.data)
-    .enter()
-    .append('circle') 
-    .attr('cx', function(d) {
-        const month=d.date;
+      .selectAll(".areaPoints")
+      .data(this.state.data)
+      .enter()
+      .append("circle")
+      .attr("cx", function (d) {
+        const month = d.date;
         return x(Months[month]);
-    })
-  .attr('cy', function(d,i) {
-    return y(d.score);
-})
-  .attr('r', 5)
-  .attr('stroke', 'white')
-  .attr('stroke-width','2')
-  .attr('fill', 'rgb(13, 94, 138)');
-
-
+      })
+      .attr("cy", function (d, i) {
+        return y(d.score);
+      })
+      .attr("r", 5)
+      .attr("stroke", "white")
+      .attr("stroke-width", "2")
+      .attr("fill", "rgb(13, 94, 138)");
   }
 
-
-  getSnapshotBeforeUpdate(prevProps){
+  getSnapshotBeforeUpdate(prevProps) {
     if (prevProps.dataChart !== this.props.dataChart) {
-        this.setState({data:this.props.dataChart});
+      this.setState({ data: this.props.dataChart });
     }
     return null;
-}
-componentDidUpdate(){
+  }
+  componentDidUpdate() {
     this.drawAreaChart();
-}
+  }
   render() {
-        return <div></div>;
+    return <div></div>;
   }
 }
 

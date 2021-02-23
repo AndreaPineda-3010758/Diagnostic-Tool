@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import data from "./json-data/data.json";
 import Grid from "@material-ui/core/Grid";
-import Info from "@material-ui/icons/Info";
-import Stop from "@material-ui/icons/Stop";
 import CircularChart from "./components/CircularChart";
 import AreaChart from "./components/AreaChart";
 import "./index.css";
@@ -31,6 +29,7 @@ buttonClicked:""};
   render() {
     //Initialize the color for the Unclicked Buttons
     let colorCircleChart="#415FC3";
+    //Iterate the Json Files to extract the necessary data to create the Circular Chart
     const circlecharts = data.map((object) =>
       object.gaugeData.map((card, index) => {
         this.state.buttonClicked===card.name ? (colorCircleChart="#6ABBD0"):(colorCircleChart="#415FC3")
